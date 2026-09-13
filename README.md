@@ -41,6 +41,8 @@ configdns_v3.yaml           <-> with_subscription/configdns_v3.yaml
 configdns_v4.yaml           <-> with_subscription/configdns_v4.yaml
 configdns_v5.yaml           <-> with_subscription/configdns_v5.yaml
 configdns_v6.yaml           <-> with_subscription/configdns_v6.yaml
+configdns_v7.yaml           <-> with_subscription/configdns_v7.yaml
+configdns_v8.yaml           <-> with_subscription/configdns_v8.yaml
 ```
 
 如果某个版本只存在于一侧，不要擅自创建或删除另一侧文件，除非用户明确要求。
@@ -84,6 +86,17 @@ DOMAIN-SUFFIX,example.com
 
 `configdns_v6.yaml` 及其私有对应版本通过 `force_proxy` rule-provider 加载该列表，并交给 `🚀 默认代理`。
 
+### 游戏下载补充列表
+
+第三方游戏下载规则未覆盖、但需要交给 `🎮 游戏下载` 策略的域名统一维护在：
+
+```text
+game_download.list
+```
+
+该文件使用 Clash classical text 格式。`configdns_v8.yaml` 及其私有对应版本通过
+`game_download_custom` rule-provider 加载该列表；其规则应放在 `geolocation-!cn` 等泛规则之前。
+
 ## 修改 filter 的注意事项
 
 地区节点组依赖节点名正则过滤。修改时要避免过宽的单字匹配。
@@ -101,6 +114,20 @@ DOMAIN-SUFFIX,example.com
 ```
 
 如果新增 `其他节点` 这类反向过滤组，要确认它不会把已有港/日/新/美等主地区重复收进去。
+
+## 版本变更记录
+
+### V8（2026-09-13）
+
+- 基于 V7，新增 `game_download.list`，补充第三方 `GameDownloadCN` 未覆盖的 Epic 下载域名。
+- V8 公私配置均通过 `game_download_custom` 将该列表交给 `🎮 游戏下载` 策略。
+
+### V7（2026-08-23）
+
+- 基于 V6，分流规则和 DNS 逻辑保持不变。
+- `keep-alive-idle` 保持为 600 秒：连接连续空闲 600 秒后才开始 TCP Keepalive 探测；期间有流量会重新计算空闲时间。
+- `keep-alive-interval` 从 15 秒调整为 1800 秒，降低 OpenClash/Mihomo 接管 iOS 长连接后，频繁探测造成的待机唤醒和耗电。
+- 仍保留 TCP Keepalive；取舍是对无响应连接进行后续探测的间隔变长，纯空闲死连接可能更晚被清理，正常业务流量的 TCP 重传与超时不受该参数替代。
 
 ## 修改前后的检查清单
 
