@@ -1,1 +1,6 @@
+DOMAIN,artifact-delivery-service-public-prod.ol.epicgames.com
+DOMAIN,launcher-public-service-prod06.ol.epicgames.com
 DOMAIN,egdownload.fastly-edge.com
+DOMAIN,epicgames-download1-1251447533.file.myqcloud.com
+DOMAIN,epicgames-download1.akamaized.net
+DOMAIN-SUFFIX,epicgamescdn.com

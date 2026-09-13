@@ -88,7 +88,7 @@ DOMAIN-SUFFIX,example.com
 
 ### 游戏下载补充列表
 
-第三方游戏下载规则未覆盖、但需要交给 `🎮 游戏下载` 策略的域名统一维护在：
+第三方游戏下载规则未覆盖、但需要交给 `🎮 游戏下载` 策略的下载清单接口和 CDN 域名统一维护在：
 
 ```text
 game_download.list
@@ -119,8 +119,9 @@ game_download.list
 
 ### V8（2026-09-13）
 
-- 基于 V7，新增 `game_download.list`，补充第三方 `GameDownloadCN` 未覆盖的 Epic 下载域名。
-- V8 公私配置均通过 `game_download_custom` 将该列表交给 `🎮 游戏下载` 策略。
+- 基于 V7，新增 `game_download.list`，覆盖 Epic 的下载清单接口、Fastly、腾讯云、Akamai 和 `epicgamescdn.com` 下载域名。
+- V8 公私配置均通过 `game_download_custom` 将该列表交给 `🎮 游戏下载` 策略，并置于 `geolocation-!cn` 等泛规则之前。
+- Epic 下载清单通过中国出口请求，可获得腾讯云国内分发点；登录和账号认证域名仍按原规则走代理。
 
 ### V7（2026-08-23）
 
