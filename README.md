@@ -43,6 +43,7 @@ configdns_v5.yaml           <-> with_subscription/configdns_v5.yaml
 configdns_v6.yaml           <-> with_subscription/configdns_v6.yaml
 configdns_v7.yaml           <-> with_subscription/configdns_v7.yaml
 configdns_v8.yaml           <-> with_subscription/configdns_v8.yaml
+configdns_v8_Claude.yaml    <-> with_subscription/configdns_v8_Claude.yaml
 ```
 
 如果某个版本只存在于一侧，不要擅自创建或删除另一侧文件，除非用户明确要求。
@@ -97,6 +98,28 @@ game_download.list
 该文件使用 Clash classical text 格式。`configdns_v8.yaml` 及其私有对应版本通过
 `game_download_custom` rule-provider 加载该列表；其规则应放在 `geolocation-!cn` 等泛规则之前。
 
+### Claude 静态 ISP 分支
+
+`configdns_v8_Claude.yaml` 是从 V8 派生的 Claude 静态 ISP 配置分支，原 V8 保持不变。
+该分支使用三个策略组：
+
+- `🧠 Claude`：选择静态 ISP、普通机场策略或直连。
+- `🛫 Claude 中转`：选择连接静态 ISP 时使用的机场节点，或选择 `➡️ 直连落地`绕过机场。
+- `🏠 Claude 落地`：在三个静态 ISP 出口之间切换，默认顺序为 ISP-2、ISP-1、ISP-3。
+
+`🛫 Claude 中转`首次使用 `REJECT`，必须手动选择机场节点或 `➡️ 直连落地`；选择结果会由
+`store-selected` 保存。Claude/Anthropic 核心域名和 IP 检测站补充规则维护在：
+
+```text
+claude_custom.list
+```
+
+第四机场的真实订阅和静态 ISP 的服务器、端口、用户名、密码只能写入
+`with_subscription/configdns_v8_Claude.yaml`，公开版本必须使用占位值。
+
+具体的节点选择顺序、常用路径和故障排查见
+[Claude 节点设置说明](CLAUDE节点设置说明.md)。
+
 ## 修改 filter 的注意事项
 
 地区节点组依赖节点名正则过滤。修改时要避免过宽的单字匹配。
@@ -116,6 +139,13 @@ game_download.list
 如果新增 `其他节点` 这类反向过滤组，要确认它不会把已有港/日/新/美等主地区重复收进去。
 
 ## 版本变更记录
+
+### V8_Claude（2026-09-16）
+
+- 从 V8 派生独立配置，不修改原 V8。
+- 新增第四机场、三个静态 ISP，以及 Claude 中转和落地选择。
+- 支持机场加静态 ISP、静态 ISP 直连、普通机场直出和完全直连四种路径。
+- 新增 `claude_custom.list`，补充 Claude 核心域名和 IP 检测站。
 
 ### V8（2026-09-13）
 
